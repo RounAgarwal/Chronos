@@ -1,0 +1,15 @@
+Morning Standup,2025-04-14,09:00
+Submit Assignment,2025-04-14,11:30
+Lunch with Team,2025-04-14,13:00
+Doctor Appointment,2025-04-15,10:00
+Library Study Session,2025-04-15,14:00
+Football Practice,2025-04-15,17:00
+Physics Lab,2025-04-16,09:30
+Project Meeting,2025-04-16,15:00
+Final Exam Prep,2025-04-17,08:00
+Data Structures Exam,2025-04-17,10:00
+Dinner with Family,2025-04-17,19:00
+College Fest Planning,2025-04-18,11:00
+Gym Session,2025-04-18,06:30
+Submit Project Report,2025-04-19,12:00
+Movie Night,2025-04-19,20:00
