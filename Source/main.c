@@ -36,7 +36,7 @@ void showAbout() {
     printThin();
     printf("   Made by:\n\n");
     printf("   Rounak Agarwal       25CBE2938\n");
-    printf("   Pragyan Gupta        25BDS0234\n");
+    printf("   Pragyan Gupta        25BBS0052\n");
     printf("   Abhivishrut Bishnoi  25BDS0148\n");
     printLine();
 }
