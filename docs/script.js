@@ -68,7 +68,7 @@ function showAbout() {
     print("   Made by:");
     print("");
     print("   Rounak Agarwal       25CBE2938");
-    print("   Pragyan Gupta        25BDS0234");
+    print("   Pragyan Gupta        25BBS0052");
     print("   Abhivishrut Bishnoi  25BDS0148");
     printLine();
 }
