@@ -1,23 +1,55 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 
-#define MAX_EVENTS 100
-#define DATA_FILE  "data.txt"
+#include <iostream>
+#include <string>
+#include <memory>
+#include <map>
+#include <algorithm>
 
-typedef struct {
-    char title[50];
-    char date[11];
-    char time[6];
-} Event;
+template <typename T>
+struct DateComparator {
+    bool operator()(const T& a, const T& b) const {
+        return a < b;
+    }
+};
 
-extern Event events[];
-extern int   eventCount;
+class BaseEvent {
+protected:
+    std::string title;
+    std::string time;
+    char* notes;
 
-void addEvent();
-void viewAll();
-void showCalendar();
-void deleteEvent();
-void saveToFile();
-void loadFromFile();
+public:
+    BaseEvent(std::string t, std::string tm, std::string nt);
+    virtual ~BaseEvent();
+    virtual void triggerAlarm() const = 0;
+    virtual void display() const;
+};
+
+class WorkEvent : public BaseEvent {
+public:
+    using BaseEvent::BaseEvent;
+    void triggerAlarm() const override;
+};
+
+class PersonalEvent : public BaseEvent {
+public:
+    using BaseEvent::BaseEvent;
+    void triggerAlarm() const override;
+};
+
+class Calendar {
+private:
+    std::multimap<std::string, std::unique_ptr<BaseEvent>, DateComparator<std::string>> schedule;
+
+public:
+    void addEvent(std::string date, std::unique_ptr<BaseEvent> ev);
+    void showAll();
+};
+
+void printLine();
+void printThin();
+void showBanner();
 
 #endif
