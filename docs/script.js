@@ -44,15 +44,13 @@ function showMenu() {
     mode = "menu";
     print("");
     printThin();
-    print("   1.  Add Event");
-    print("   2.  View All Events");
+    print("   1.  Add Work Event");
+    print("   2.  Add Personal Event");
     print("   3.  Show Calendar");
-    print("   4.  Delete Event");
-    print("   5.  About");
-    print("   6.  Save & Exit");
+    print("   4.  About");
+    print("   5.  Save & Exit");
     printThin();
     print("");
-
     setPrompt("   Choose: ");
 }
 
@@ -73,25 +71,14 @@ function showAbout() {
     printLine();
 }
 
-// ---------- FEATURES ----------
-function viewAll() {
-    if (events.length === 0) {
-        print("\n  No events found.");
-        return;
+
+// ---------- LOGIC (POLYMORPHISM SIMULATION) ----------
+function triggerAlarm(type, title) {
+    if (type === "Work") {
+        return `  >>> [URGENT] Professional Meeting Alert: ${title} <<<`;
+    } else {
+        return `  >>> [REMINDER] Personal Activity: ${title} <<<`;
     }
-
-    print("");
-    print("  No.   Title                          Date         Time");
-    print("  -----------------------------------------");
-
-    events.forEach((e, i) => {
-        let num = String(i + 1).padEnd(4);
-        let title = e.title.padEnd(30);
-        let date = e.date.padEnd(12);
-        print(`  ${num}  ${title}  ${date}  ${e.time}`);
-    });
-
-    print("");
 }
 
 function showCalendar() {
@@ -100,59 +87,46 @@ function showCalendar() {
         return;
     }
 
-    let seen = [];
+    // Sort by Date (Simulating STL Multimap behavior)
+    let sortedEvents = [...events].sort((a, b) => a.date.localeCompare(b.date));
 
-    events.forEach(e => {
-        if (!seen.includes(e.date)) seen.push(e.date);
-    });
+    let currentDate = "";
 
-    seen.forEach(date => {
-        print(`\n  Date: ${date}`);
-        print("  -----------------------------------------");
-        print("  Title                          Time");
-        print("  -----------------------------------------");
-
-        events.forEach(e => {
-            if (e.date === date) {
-                let title = e.title.padEnd(30);
-                print(`  ${title}  ${e.time}`);
-            }
-        });
+    sortedEvents.forEach(e => {
+        if (e.date !== currentDate) {
+            currentDate = e.date;
+            print(`\n  Date: ${currentDate}`);
+            printThin();
+            print("  Title                Time      Details");
+            printThin();
+        }
+        
+        print(triggerAlarm(e.type, e.title));
+        let title = e.title.padEnd(20);
+        let time = e.time.padEnd(10);
+        print(`  ${title} ${time} Note: ${e.notes}`);
     });
 
     print("");
 }
 
-// ---------- MENU ----------
+// ---------- MENU HANDLER ----------
 function handleMenu(choice) {
-    if (choice === "1") {
-        mode = "title";
-        print("\n  -- Add Event --");
-        setPrompt("  Title: ");
-    }
-    else if (choice === "2") {
-        viewAll();
-        showMenu();
+    if (choice === "1" || choice === "2") {
+        temp.type = (choice === "1") ? "Work" : "Personal";
+        mode = "date";
+        print(`\n  -- Add ${temp.type} Event --`);
+        setPrompt("  Date (YYYY-MM-DD): ");
     }
     else if (choice === "3") {
         showCalendar();
         showMenu();
     }
     else if (choice === "4") {
-        if (events.length === 0) {
-            print("\n  No events found.");
-            showMenu();
-            return;
-        }
-        viewAll();
-        mode = "delete";
-        setPrompt("  Enter number to delete: ");
-    }
-    else if (choice === "5") {
         showAbout();
         showMenu();
     }
-    else if (choice === "6") {
+    else if (choice === "5") {
         save();
         print("\n  Saved. Goodbye.\n");
         setPrompt("");
@@ -164,7 +138,7 @@ function handleMenu(choice) {
     }
 }
 
-// ---------- INPUT ----------
+// ---------- INPUT LOOP ----------
 input.addEventListener("keydown", function(e) {
     if (e.key !== "Enter") return;
 
@@ -175,41 +149,29 @@ input.addEventListener("keydown", function(e) {
     if (mode === "menu") {
         handleMenu(value);
     }
-
-    else if (mode === "title") {
-        temp.title = value;
-        mode = "date";
-        setPrompt("  Date (YYYY-MM-DD): ");
-    }
-
     else if (mode === "date") {
         temp.date = value;
+        mode = "title";
+        setPrompt("  Title: ");
+    }
+    else if (mode === "title") {
+        temp.title = value;
         mode = "time";
         setPrompt("  Time (HH:MM): ");
     }
-
     else if (mode === "time") {
         temp.time = value;
+        mode = "notes";
+        setPrompt("  Notes: ");
+    }
+    else if (mode === "notes") {
+        temp.notes = value;
         events.push(temp);
         temp = {};
         print("  Event added.");
         showMenu();
     }
-
-    else if (mode === "delete") {
-        let n = parseInt(value);
-
-        if (n < 1 || n > events.length) {
-            print("  Invalid number.");
-        } else {
-            print(`  Deleted: ${events[n - 1].title}`);
-            events.splice(n - 1, 1);
-        }
-
-        showMenu();
-    }
 });
 
-// ---------- START ----------
 showBanner();
 showMenu();
